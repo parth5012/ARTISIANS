@@ -1,7 +1,7 @@
 import os
 from flask import Flask, render_template, request, redirect, url_for, session, flash, send_from_directory, jsonify, send_file
 from werkzeug.utils import secure_filename
-from huggingface_hub import InferenceClient
+from google import genai
 from dotenv import load_dotenv
 from flask_pymongo import PyMongo
 from bson.objectid import ObjectId
@@ -10,7 +10,7 @@ from bson.objectid import ObjectId
 load_dotenv()
 db_user = os.getenv("db_user")
 db_pass = os.getenv("db_pass")
-hf_api = os.getenv("HUGGINGFACEHUB_API_TOKEN")
+gemini_api = os.getenv("GEMINI_API_KEY")
 app = Flask(__name__)
 app.secret_key = 'your-secret-key'  # Change in production
 
@@ -45,21 +45,18 @@ def uploaded_file(filename):
         return f"File not found: {e}", 404
 
 
-os.environ["HUGGINGFACEHUB_API_TOKEN"] = hf_api
+os.environ["GEMINI_API_KEY"] = gemini_api
 
 
 def generate_story(product_name):
-    client = InferenceClient(api_key=hf_api)
-    response = client.chat_completion(
-        model="HuggingFaceH4/zephyr-7b-beta",
-        messages=[
-            {"role": "system", "content": "You are a salesman."},
-            {"role": "user", "content": f"Share some historical background about {product_name} such that the reader feels like they should buy one."}
-        ],
-        max_tokens=200,
-        temperature=0.7
+    client = genai.Client()
+
+    response = client.models.generate_content(
+        model="gemini-2.5-flash",
+        contents="Explain how AI works",
     )
-    return response.choices[0].message["content"]
+
+    print(response.text)
 
 
 @app.route('/')
