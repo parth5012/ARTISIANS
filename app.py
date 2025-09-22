@@ -53,7 +53,7 @@ def generate_story(product_name):
 
     response = client.models.generate_content(
         model="gemini-2.5-flash",
-        contents="Explain how AI works",
+        contents=f"Share some historical background about {product_name} such that the reader feels like they should buy one.",
     )
 
     print(response.text)
