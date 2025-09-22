@@ -79,7 +79,7 @@ def artisan_signup():
             "email": data['email'],
             "address": data['address'],
             "skills": data['skills'],
-            "profile_pic": file_id,
+            "profile_pic_id": file_id,
             "bank_info": data.get('bank_info', '')
         }
         artisans.insert_one(artisan)
@@ -108,8 +108,8 @@ def upload_product():
             return redirect(request.url)
         # model_file.save(os.path.join(
         #     app.config['UPLOAD_FOLDER'], model_filename))
-        mongo.save_file(model_filename, model_file)
-        mongo.save_file(img_file.filename, img_file,)
+        model_id = mongo.save_file(model_filename, model_file)
+        img_id = mongo.save_file(img_file.filename, img_file,)
         story = generate_story(data['product_name'])
         customization = {
             "color": data.get('color_options', ''),
@@ -120,8 +120,8 @@ def upload_product():
             "name": data['product_name'],
             "price": data['price'],
             "artisan_email": session['artisan'],
-            "product_img": img_filename,
-            "product_3dfile": model_filename,
+            "product_img_id": img_id,
+            "product_3dfile_id": model_id,
             "story": story,
             "customization": customization
         }
@@ -138,12 +138,12 @@ def user_signup():
         filename = secure_filename(file.filename)
         # file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
         # Save file to GridFS and get the unique ID
-        mongo.save_file(filename, file)
+        fileid = mongo.save_file(filename, file)
         user = {
             "name": data['name'],
             "email": data['email'],
             "password": data['password'],
-            "profile_pic": filename
+            "profile_pic": fileid
         }
         users.insert_one(user)
         session['user'] = user['email']
