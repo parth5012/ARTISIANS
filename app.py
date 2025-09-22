@@ -56,7 +56,7 @@ def generate_story(product_name):
         contents=f"Share some historical background about {product_name} such that the reader feels like they should buy one.",
     )
 
-    print(response.text)
+    return response.text
 
 
 @app.route('/')
