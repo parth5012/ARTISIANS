@@ -1,28 +1,910 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
-    <title>Artisan Marketplace</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
-    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ArtifyLabs - Handmade Artisan Marketplace</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Georgia', serif;
+            line-height: 1.6;
+            color: #4a4a4a;
+            background-color: #faf8f5;
+        }
+
+        /* Color palette */
+        :root {
+            --terracotta: #d47651;
+            --beige: #f5f0e8;
+            --deep-green: #6b7c4d;
+            --mustard: #e6b85c;
+            --warm-white: #faf8f5;
+            --dark-brown: #3d2f28;
+        }
+
+        /* Sticky Navigation */
+        .navbar {
+            position: sticky;
+            top: 0;
+            background: var(--warm-white);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            padding: 1rem 0;
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 2rem;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: var(--terracotta);
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--dark-brown);
+            font-weight: 500;
+            transition: color 0.3s ease;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+        }
+
+        .nav-links a:hover {
+            color: var(--terracotta);
+            background-color: var(--beige);
+        }
+
+        .nav-actions {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .btn {
+            padding: 0.7rem 1.5rem;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: bold;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: var(--terracotta);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #c16a45;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--deep-green);
+            border: 2px solid var(--deep-green);
+        }
+
+        .btn-secondary:hover {
+            background: var(--deep-green);
+            color: white;
+        }
+
+        /* Floating Cart */
+        .floating-cart {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: var(--mustard);
+            color: var(--dark-brown);
+            border: none;
+            border-radius: 50px;
+            padding: 1rem 1.5rem;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            transition: transform 0.3s ease;
+        }
+
+        .floating-cart:hover {
+            transform: scale(1.1);
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="600" fill="%23d47651"><rect width="1200" height="600"/><text x="50%" y="50%" text-anchor="middle" fill="white" font-size="24" font-family="serif">Artisan Workshop Background</text></svg>');
+            background-size: cover;
+            background-position: center;
+            height: 70vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: white;
+        }
+
+        .hero-content h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        .hero-content p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            max-width: 600px;
+        }
+
+        .search-bar {
+            display: flex;
+            max-width: 500px;
+            margin: 0 auto 2rem;
+            background: white;
+            border-radius: 30px;
+            padding: 0.5rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .search-bar input {
+            flex: 1;
+            border: none;
+            padding: 1rem 1.5rem;
+            font-size: 1rem;
+            border-radius: 25px;
+            outline: none;
+            color: var(--dark-brown);
+        }
+
+        .search-bar button {
+            background: var(--terracotta);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        /* Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        /* Section Spacing */
+        .section {
+            padding: 4rem 0;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            color: var(--dark-brown);
+            margin-bottom: 3rem;
+            position: relative;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 3px;
+            background: var(--terracotta);
+            border-radius: 2px;
+        }
+
+        /* Featured Categories */
+        .categories-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .category-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+        }
+
+        .category-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .category-icon {
+            width: 80px;
+            height: 80px;
+            background: var(--beige);
+            border-radius: 50%;
+            margin: 0 auto 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: var(--terracotta);
+        }
+
+        .category-card h3 {
+            color: var(--dark-brown);
+            margin-bottom: 0.5rem;
+        }
+
+        /* Product Carousel */
+        .products-carousel {
+            display: flex;
+            gap: 2rem;
+            overflow-x: auto;
+            padding: 2rem 0;
+            scroll-behavior: smooth;
+        }
+
+        .product-card {
+            min-width: 280px;
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .product-image {
+            height: 200px;
+            background: var(--beige);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--terracotta);
+            font-size: 1.2rem;
+        }
+
+        .product-info {
+            padding: 1.5rem;
+        }
+
+        .product-info h4 {
+            color: var(--dark-brown);
+            margin-bottom: 0.5rem;
+        }
+
+        .product-price {
+            font-weight: bold;
+            color: var(--terracotta);
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .rating {
+            display: flex;
+            gap: 0.2rem;
+            margin-bottom: 1rem;
+        }
+
+        .star {
+            color: var(--mustard);
+        }
+
+        .add-to-cart {
+            width: 100%;
+            padding: 0.8rem;
+            background: var(--deep-green);
+            color: white;
+            border: none;
+            border-radius: 15px;
+            cursor: pointer;
+            font-weight: bold;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .product-card:hover .add-to-cart {
+            opacity: 1;
+        }
+
+        /* Artisan Stories */
+        .artisan-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .artisan-card {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .artisan-photo {
+            height: 200px;
+            background: var(--beige);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--terracotta);
+            font-size: 1.1rem;
+        }
+
+        .artisan-info {
+            padding: 2rem;
+        }
+
+        .artisan-info h4 {
+            color: var(--dark-brown);
+            margin-bottom: 0.5rem;
+        }
+
+        .artisan-specialty {
+            color: var(--terracotta);
+            font-style: italic;
+            margin-bottom: 1rem;
+        }
+
+        /* Value Props */
+        .value-props {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .value-prop {
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .value-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .value-prop h4 {
+            color: var(--dark-brown);
+            margin-bottom: 1rem;
+        }
+
+        /* Seller CTA */
+        .seller-cta {
+            background: var(--deep-green);
+            color: white;
+            text-align: center;
+            padding: 4rem 2rem;
+            border-radius: 20px;
+            margin: 2rem 0;
+        }
+
+        .seller-cta h3 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        /* Testimonials */
+        .testimonials {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .testimonial {
+            background: white;
+            padding: 2rem;
+            border-radius: 20px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+
+        .testimonial::before {
+            content: '"';
+            font-size: 4rem;
+            color: var(--terracotta);
+            position: absolute;
+            top: 0.5rem;
+            left: 1rem;
+        }
+
+        .testimonial-text {
+            margin: 2rem 0 1rem;
+            font-style: italic;
+        }
+
+        .testimonial-author {
+            font-weight: bold;
+            color: var(--deep-green);
+        }
+
+        /* Footer */
+        .footer {
+            background: var(--dark-brown);
+            color: white;
+            padding: 3rem 0 1rem;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .footer-section h4 {
+            margin-bottom: 1rem;
+            color: var(--mustard);
+        }
+
+        .footer-section a {
+            color: white;
+            text-decoration: none;
+            display: block;
+            margin-bottom: 0.5rem;
+            transition: color 0.3s ease;
+        }
+
+        .footer-section a:hover {
+            color: var(--terracotta);
+        }
+
+        .newsletter {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .newsletter input {
+            flex: 1;
+            padding: 0.8rem;
+            border: none;
+            border-radius: 15px;
+            outline: none;
+        }
+
+        .newsletter button {
+            padding: 0.8rem 1.5rem;
+            background: var(--terracotta);
+            color: white;
+            border: none;
+            border-radius: 15px;
+            cursor: pointer;
+        }
+
+        .social-icons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .social-icons a {
+            width: 40px;
+            height: 40px;
+            background: var(--terracotta);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            text-decoration: none;
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 2rem;
+            border-top: 1px solid #555;
+            color: #ccc;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .hero-content h1 {
+                font-size: 2.5rem;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .section-title {
+                font-size: 2rem;
+            }
+
+            .products-carousel {
+                gap: 1rem;
+            }
+
+            .product-card {
+                min-width: 250px;
+            }
+        }
+    </style>
 </head>
 
-<body style="background-image: url('/static/indian_art.jpg')">
+<body>
+    <!-- Sticky Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">ArtifyLabs</div>
+            <ul class="nav-links">
+                <li><a href="#categories">Categories</a></li>
+                <li><a href="#artisans">Artisans</a></li>
+                <li><a href="#about">About</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+            <div class="nav-actions">
+                <a href="/login" class="btn btn-secondary">Login</a>
+                <a href="/user_signup" class="btn btn-primary">Sign Up</a>
+            </div>
+        </div>
+    </nav>
 
-    <header>
-        <button onclick="window.location.href='/artisan_signup'">Artisan</button>
-        <button onclick="window.location.href='/user_signup'">User</button>
-        <button onclick="window.location.href='/login'">Login</button>
-    </header>
-    <main>
-        <h1>Welcome to the Indian Artisan Marketplace</h1>
-        <p>Embrace Indian Heritage. Support local crafts. Every piece has a story.</p>
-    </main>
-    <footer>
-        Made with ♥ to empower Indian Artisans.
+    <!-- Floating Cart -->
+    <button class="floating-cart">
+        🛒 Cart (3)
+    </button>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Handmade with Love,<br>From Local Artisans to You</h1>
+            <p>Discover unique, one-of-a-kind treasures crafted by talented artisans from around the world. Every piece
+                tells a story.</p>
+
+            <div class="search-bar">
+                <input type="text" placeholder="Search handmade jewelry, pottery, fabrics...">
+                <button>Search</button>
+            </div>
+
+            <div style="margin-top: 2rem;">
+                <a href="#categories" class="btn btn-primary" style="margin-right: 1rem;">Shop Now</a>
+                <a href="#artisans" class="btn btn-secondary">Meet Artisans</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Featured Categories -->
+    <section class="section" id="categories">
+        <div class="container">
+            <h2 class="section-title">Shop by Category</h2>
+            <div class="categories-grid">
+                <div class="category-card">
+                    <div class="category-icon">💎</div>
+                    <h3>Jewelry</h3>
+                    <p>Handcrafted rings, necklaces, and earrings</p>
+                </div>
+                <div class="category-card">
+                    <div class="category-icon">🏺</div>
+                    <h3>Pottery</h3>
+                    <p>Ceramic bowls, mugs, and decorative pieces</p>
+                </div>
+                <div class="category-card">
+                    <div class="category-icon">🧵</div>
+                    <h3>Textiles</h3>
+                    <p>Woven scarves, blankets, and fabrics</p>
+                </div>
+                <div class="category-card">
+                    <div class="category-icon">🏠</div>
+                    <h3>Home Decor</h3>
+                    <p>Candles, wall art, and furniture</p>
+                </div>
+                <div class="category-card">
+                    <div class="category-icon">🎨</div>
+                    <h3>Paintings</h3>
+                    <p>Original artwork and prints</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Top Picks / Trending Products -->
+    <section class="section">
+        <div class="container">
+            <h2 class="section-title">Trending This Week</h2>
+            <div class="products-carousel">
+                <div class="product-card">
+                    <div class="product-image">Handwoven Ceramic Bowl</div>
+                    <div class="product-info">
+                        <h4>Artisan Ceramic Bowl</h4>
+                        <div class="product-price">$48.00</div>
+                        <div class="rating">
+                            <span class="star">★</span>
+                            <span class="star">★</span>
+                            <span class="star">★</span>
+                            <span class="star">★</span>
+                            <span class="star">★</span>
+                            <span>(24)</span>
+                        </div>
+                        <button class="add-to-cart">Add to Cart</button>
+                    </div>
+                </div>
+                <div class="product-card">
+                    <div class="product-image">Silver Wire Earrings</div>
+                    <div class="product-info">
+                        <h4>Handmade Silver Earrings</h4>
+                        <div class="product-price">$32.00</div>
+                        <div class="rating">
+                            <span class="star">★</span>
+                            <span class="star">★</span>
+                            <span class="star">★</span>
+                            <span class="star">★</span>
+                            <span class="star">★</span>
+                            <span>(18)</span>
+                        </div>
+                        <button class="add-to-cart">Add to Cart</button>
+                    </div>
+                </div>
+                <div class="product-card">
+                    <div class="product-image">Woven Wool Scarf</div>
+                    <div class="product-info">
+                        <h4>Hand-Woven Wool Scarf</h4>
+                        <div class="product-price">$65.00</div>
+                        <div class="rating">
+                            <span class="star">★</span>
+                            <span class="star">★</span>
+                            <span class="star">★</span>
+                            <span class="star">★</span>
+                            <span class="star">☆</span>
+                            <span>(31)</span>
+                        </div>
+                        <button class="add-to-cart">Add to Cart</button>
+                    </div>
+                </div>
+                <div class="product-card">
+                    <div class="product-image">Wooden Cutting Board</div>
+                    <div class="product-info">
+                        <h4>Carved Walnut Board</h4>
+                        <div class="product-price">$78.00</div>
+                        <div class="rating">
+                            <span class="star">★</span>
+                            <span class="star">★</span>
+                            <span class="star">★</span>
+                            <span class="star">★</span>
+                            <span class="star">★</span>
+                            <span>(12)</span>
+                        </div>
+                        <button class="add-to-cart">Add to Cart</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Storytelling Section - Meet the Artisans -->
+    <section class="section" id="artisans">
+        <div class="container">
+            <h2 class="section-title">Meet the Artisans</h2>
+            <div class="artisan-grid">
+                <div class="artisan-card">
+                    <div class="artisan-photo">Portrait of Maria Rodriguez</div>
+                    <div class="artisan-info">
+                        <h4>Maria Rodriguez</h4>
+                        <div class="artisan-specialty">Ceramic Artist</div>
+                        <p>"I've been working with clay for over 15 years. Each piece I create is inspired by the
+                            natural beauty of my hometown in Mexico. I believe pottery should be both beautiful and
+                            functional."</p>
+                    </div>
+                </div>
+                <div class="artisan-card">
+                    <div class="artisan-photo">Portrait of James Chen</div>
+                    <div class="artisan-info">
+                        <h4>James Chen</h4>
+                        <div class="artisan-specialty">Jewelry Designer</div>
+                        <p>"My designs blend traditional Asian techniques with modern aesthetics. I work primarily with
+                            recycled metals to create sustainable, timeless pieces that tell a story."</p>
+                    </div>
+                </div>
+                <div class="artisan-card">
+                    <div class="artisan-photo">Portrait of Sarah Williams</div>
+                    <div class="artisan-info">
+                        <h4>Sarah Williams</h4>
+                        <div class="artisan-specialty">Textile Weaver</div>
+                        <p>"Growing up on a sheep farm, I learned to appreciate the entire process from fiber to fabric.
+                            My textiles are made with organic, locally-sourced wool using traditional weaving methods."
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Value Props -->
+    <section class="section">
+        <div class="container">
+            <h2 class="section-title">Why Choose CraftedHome?</h2>
+            <div class="value-props">
+                <div class="value-prop">
+                    <div class="value-icon">🌱</div>
+                    <h4>Eco-Friendly & Handmade</h4>
+                    <p>Every item is crafted by hand using sustainable materials and traditional techniques passed down
+                        through generations.</p>
+                </div>
+                <div class="value-prop">
+                    <div class="value-icon">🎨</div>
+                    <h4>Unique, One-of-a-Kind Items</h4>
+                    <p>Find treasures you won't see anywhere else. Each piece is unique and carries the personal touch
+                        of its creator.</p>
+                </div>
+                <div class="value-prop">
+                    <div class="value-icon">📦</div>
+                    <h4>Secure & Easy Shipping</h4>
+                    <p>We carefully package each item and provide tracking. Your handmade treasures arrive safely at
+                        your doorstep.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Seller CTA -->
+    <section class="section">
+        <div class="container">
+            <div class="seller-cta">
+                <h3>Are you an artisan?</h3>
+                <p>Join our community of makers and share your creations with the world. Start your journey today!</p>
+                <a href="/artisan_signup" class="btn btn-primary" style="margin-top: 1rem;">Become a Seller</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials -->
+    <section class="section">
+        <div class="container">
+            <h2 class="section-title">Customer Love</h2>
+            <div class="testimonials">
+                <div class="testimonial">
+                    <p class="testimonial-text">The ceramic bowl I ordered exceeded my expectations. You can feel the
+                        love and craftsmanship in every detail. It's become my favorite piece in the kitchen!</p>
+                    <div class="testimonial-author">— Emma Thompson</div>
+                </div>
+                <div class="testimonial">
+                    <p class="testimonial-text">I love knowing the story behind each piece I buy. The connection to the
+                        artisan makes these items so much more meaningful than mass-produced goods.</p>
+                    <div class="testimonial-author">— David Park</div>
+                </div>
+                <div class="testimonial">
+                    <p class="testimonial-text">Fast shipping, beautiful packaging, and the most stunning handwoven
+                        scarf. I've gotten so many compliments! Will definitely be ordering again.</p>
+                    <div class="testimonial-author">— Lisa Martinez</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>Quick Links</h4>
+                    <a href="#about">About Us</a>
+                    <a href="#contact">Contact</a>
+                    <a href="#faq">FAQ</a>
+                    <a href="#shipping">Shipping Info</a>
+                    <a href="#returns">Returns</a>
+                </div>
+                <div class="footer-section">
+                    <h4>For Sellers</h4>
+                    <a href="#seller-login">Seller Login</a>
+                    <a href="/artisan_signup">Become a Seller</a>
+                    <a href="#seller-guide">Seller Guide</a>
+                    <a href="#seller-support">Support</a>
+                </div>
+                <div class="footer-section">
+                    <h4>For Buyers</h4>
+                    <a href="#buyer-login">Buyer Login</a>
+                    <a href="#wishlist">My Wishlist</a>
+                    <a href="#orders">Order History</a>
+                    <a href="#help">Help Center</a>
+                </div>
+                <div class="footer-section">
+                    <h4>Stay Connected</h4>
+                    <p>Get stories from artisans straight to your inbox</p>
+                    <div class="newsletter">
+                        <input type="email" placeholder="Enter your email">
+                        <button>Subscribe</button>
+                    </div>
+                    <div class="social-icons">
+                        <a href="#facebook">f</a>
+                        <a href="#instagram">📷</a>
+                        <a href="#pinterest">P</a>
+                        <a href="#twitter">🐦</a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 CraftedHome. All rights reserved. Made with ❤️ for artisans worldwide.</p>
+            </div>
+        </div>
     </footer>
-    <script src="{{ url_for('static', filename='js/product_viewer.js') }}"></script>
 
+    <script>
+        // Add smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Add to cart functionality
+        document.querySelectorAll('.add-to-cart').forEach(button => {
+            button.addEventListener('click', function () {
+                this.textContent = 'Added!';
+                this.style.background = '#6b7c4d';
+                setTimeout(() => {
+                    this.textContent = 'Add to Cart';
+                    this.style.background = '';
+                }, 2000);
+            });
+        });
+
+        // Floating cart update
+        let cartCount = 3;
+        document.querySelector('.floating-cart').addEventListener('click', function () {
+            alert('Cart functionality would be implemented here!');
+        });
+
+        // Search functionality
+        document.querySelector('.search-bar button').addEventListener('click', function () {
+            const searchTerm = document.querySelector('.search-bar input').value;
+            if (searchTerm) {
+                alert(`Searching for: "${searchTerm}"`);
+            }
+        });
+
+        // Newsletter signup
+        document.querySelector('.newsletter button').addEventListener('click', function () {
+            const email = document.querySelector('.newsletter input').value;
+            if (email) {
+                alert('Thank you for subscribing!');
+                document.querySelector('.newsletter input').value = '';
+            }
+        });
+
+        // Category card hover effects
+        document.querySelectorAll('.category-card').forEach(card => {
+            card.addEventListener('click', function () {
+                const category = this.querySelector('h3').textContent;
+                alert(`Browsing ${category} category`);
+            });
+        });
+    </script>
 </body>
-
-</html>
