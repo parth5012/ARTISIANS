@@ -79,6 +79,7 @@ def artisan_signup():
             "email": data['email'],
             "address": data['address'],
             "skills": data['skills'],
+            "profile_pic": filename,
             "profile_pic_id": file_id,
             "bank_info": data.get('bank_info', '')
         }
@@ -120,6 +121,8 @@ def upload_product():
             "name": data['product_name'],
             "price": data['price'],
             "artisan_email": session['artisan'],
+            "product_img": img_filename,
+            "product_3dfile": model_filename,
             "product_img_id": img_id,
             "product_3dfile_id": model_id,
             "story": story,
@@ -143,7 +146,8 @@ def user_signup():
             "name": data['name'],
             "email": data['email'],
             "password": data['password'],
-            "profile_pic": fileid
+            "profile_pic": filename,
+            "profile_pic_id": fileid
         }
         users.insert_one(user)
         session['user'] = user['email']
