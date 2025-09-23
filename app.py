@@ -52,7 +52,7 @@ def generate_story(product_name):
     client = genai.Client()
 
     response = client.models.generate_content(
-        model="gemini-2.5-flash",
+        model="gemini-2.5-flash-lite",
         contents=f"Share some historical background about {product_name} such that the reader feels like they should buy one.",
     )
 
