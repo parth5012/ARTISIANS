@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Join ArtifyLabs - AI-Powered Artisan Marketplace</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Georgia', serif;
+            background: linear-gradient(135deg, #8B5A3C 0%, #A0522D 50%, #CD853F 100%);
+            min-height: 100vh;
+            color: #2C1810;
+        }
+
+        .container {
+            display: flex;
+            min-height: 100vh;
+            max-width: 1400px;
+            margin: 0 auto;
+            box-shadow: 0 0 50px rgba(0, 0, 0, 0.3);
+        }
+
+        .left-section {
+            flex: 1;
+            background: linear-gradient(rgba(139, 90, 60, 0.8), rgba(160, 82, 45, 0.9));
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 3rem;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .left-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="20" cy="20" r="2" fill="rgba(255,255,255,0.1)"/><circle cx="80" cy="30" r="1.5" fill="rgba(255,255,255,0.08)"/><circle cx="40" cy="70" r="1" fill="rgba(255,255,255,0.06)"/><circle cx="70" cy="80" r="2.5" fill="rgba(255,255,255,0.05)"/></svg>') repeat;
+            animation: float 20s infinite linear;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(0px) rotate(0deg);
+            }
+
+            100% {
+                transform: translateY(-100px) rotate(360deg);
+            }
+        }
+
+        .logo {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-bottom: 2rem;
+            z-index: 2;
+            color: #F5E6D3;
+        }
+
+        .hero-content {
+            text-align: center;
+            z-index: 2;
+            max-width: 400px;
+        }
+
+        .hero-title {
+            font-size: 2.2rem;
+            margin-bottom: 1.5rem;
+            line-height: 1.3;
+            font-weight: 300;
+        }
+
+        .hero-subtitle {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            line-height: 1.6;
+            margin-bottom: 2rem;
+        }
+
+        .ai-badge {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 0.5rem 1.2rem;
+            border-radius: 25px;
+            font-size: 0.9rem;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            display: inline-block;
+            margin-bottom: 2rem;
+        }
+
+        .right-section {
+            flex: 1;
+            background: #F5E6D3;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 3rem;
+        }
+
+        .signup-form {
+            background: white;
+            padding: 3rem;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(139, 90, 60, 0.2);
+            width: 100%;
+            max-width: 450px;
+            border: 1px solid rgba(139, 90, 60, 0.1);
+        }
+
+        .form-title {
+            font-size: 2rem;
+            color: #8B5A3C;
+            margin-bottom: 0.5rem;
+            text-align: center;
+        }
+
+        .form-subtitle {
+            color: #666;
+            text-align: center;
+            margin-bottom: 2rem;
+            font-size: 0.95rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .form-row .form-group {
+            flex: 1;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #5D4037;
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+
+        input,
+        select {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            border: 2px solid #E0E0E0;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: #FAFAFA;
+        }
+
+        input:focus,
+        select:focus {
+            outline: none;
+            border-color: #D2691E;
+            background: white;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 20px rgba(210, 105, 30, 0.2);
+        }
+
+        .user-type {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .type-option {
+            flex: 1;
+            padding: 1rem;
+            border: 2px solid #E0E0E0;
+            border-radius: 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: #FAFAFA;
+        }
+
+        .type-option:hover {
+            border-color: #D2691E;
+            transform: translateY(-2px);
+        }
+
+        .type-option.selected {
+            border-color: #D2691E;
+            background: #FFF5EE;
+            color: #8B5A3C;
+        }
+
+        .type-option input {
+            display: none;
+        }
+
+        .type-title {
+            font-weight: 600;
+            margin-bottom: 0.3rem;
+        }
+
+        .type-desc {
+            font-size: 0.8rem;
+            color: #666;
+        }
+
+        .signup-btn {
+            width: 100%;
+            background: linear-gradient(45deg, #D2691E, #CD853F);
+            color: white;
+            padding: 1rem;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 1rem;
+        }
+
+        .signup-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(210, 105, 30, 0.4);
+        }
+
+        .login-link {
+            text-align: center;
+            margin-top: 1.5rem;
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .login-link a {
+            color: #D2691E;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .login-link a:hover {
+            text-decoration: underline;
+        }
+
+        .features {
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid #E0E0E0;
+        }
+
+        .feature-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.8rem;
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .feature-icon {
+            width: 20px;
+            height: 20px;
+            background: #D2691E;
+            border-radius: 50%;
+            margin-right: 0.8rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 0.7rem;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+            }
+
+            .left-section {
+                padding: 2rem 1rem;
+                min-height: 40vh;
+            }
+
+            .hero-title {
+                font-size: 1.8rem;
+            }
+
+            .right-section {
+                padding: 2rem 1rem;
+            }
+
+            .signup-form {
+                padding: 2rem 1.5rem;
+            }
+
+            .form-row {
+                flex-direction: column;
+                gap: 0;
+            }
+
+            .user-type {
+                flex-direction: column;
+            }
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.5rem;
+            font-size: 0.85rem;
+            color: #666;
+            margin-bottom: 1.5rem;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            width: auto;
+            margin: 0;
+            margin-top: 2px;
+        }
+
+        .checkbox-group label {
+            margin: 0;
+            flex: 1;
+            font-weight: normal;
+        }
+
+        .checkbox-group a {
+            color: #D2691E;
+            text-decoration: none;
+        }
+
+        .checkbox-group a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="left-section">
+            <div class="logo">ArtifyLabs</div>
+            <div class="hero-content">
+                <div class="ai-badge">✨ AI-Powered Platform</div>
+                <h1 class="hero-title">Join the Future of Handmade</h1>
+                <p class="hero-subtitle">Connect with customers worldwide, powered by AI that understands your craft and
+                    amplifies your artisan story.</p>
+            </div>
+        </div>
+
+        <div class="right-section">
+            <form class="signup-form" id="signupForm" method="POST" enctype="multipart/form-data"
+                action="{{ url_for('signup') }}">
+                <h2 class="form-title">Create Your Account</h2>
+                <p class="form-subtitle">Start your journey!!</p>
+
+                <div class="user-type">
+                    <div class="type-option selected" onclick="selectUserType('artisan')">
+                        <input type="radio" name="userType" value="artisan" checked>
+                        <div class="type-title">🎨 Artisan</div>
+                        <div class="type-desc">Sell your creations</div>
+                    </div>
+                    <div class="type-option" onclick="selectUserType('buyer')">
+                        <input type="radio" name="userType" value="buyer">
+                        <div class="type-title">🛍️ Buyer</div>
+                        <div class="type-desc">Discover unique items</div>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="firstName">First Name</label>
+                        <input type="text" id="firstName" name="firstName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="lastName">Last Name</label>
+                        <input type="text" id="lastName" name="lastName" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" required>
+                </div>
+
+                <div class='form-group'>
+                    <label for="address">Address</label>
+                    <input type="text" id="address" name="address" required>
+                </div>
+                <div class='form-group'>
+                    <label for="profile_pic"> Profile Picture: </label>
+                    <input type="file" name="profile_pic" id="profile_pic" accept="image/*">
+
+                </div>
+
+                <div class="form-group" id="craftTypeGroup" style="display: block;">
+                    <label for="craftType">Your Craft Specialty</label>
+                    <select id="craftType" name="craftType">
+                        <option value="">Select your main craft</option>
+                        <option value="jewelry">Jewelry & Accessories</option>
+                        <option value="pottery">Pottery & Ceramics</option>
+                        <option value="textiles">Textiles & Fabrics</option>
+                        <option value="woodworking">Woodworking</option>
+                        <option value="metalwork">Metalwork</option>
+                        <option value="glasswork">Glasswork</option>
+                        <option value="painting">Painting & Art</option>
+                        <option value="sculpture">Sculpture</option>
+                        <option value="leather">Leather Goods</option>
+                        <option value="paper">Paper Crafts</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+                <div class="checkbox-group">
+                    <input type="checkbox" id="terms" name="terms" required>
+                    <label for="terms">I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy
+                            Policy</a></label>
+                </div>
+
+                <div class="checkbox-group">
+                    <input type="checkbox" id="newsletter" name="newsletter">
+                    <label for="newsletter">Send me updates about new AI features and artisan success stories</label>
+                </div>
+
+                <button type="submit" class="signup-btn">Create Account</button>
+
+                <div class="features">
+                    <div class="feature-item">
+                        <div class="feature-icon">AI</div>
+                        <span>AI-powered product descriptions and SEO</span>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon">🌍</div>
+                        <span>Global marketplace reach</span>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon">📊</div>
+                        <span>Smart analytics and insights</span>
+                    </div>
+                </div>
+
+                <div class="login-link">
+                    Already have an account? <a href="#">Sign In</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        function selectUserType(type) {
+            const options = document.querySelectorAll('.type-option');
+            const craftGroup = document.getElementById('craftTypeGroup');
+
+            options.forEach(option => option.classList.remove('selected'));
+            event.target.closest('.type-option').classList.add('selected');
+
+            // Update radio button
+            document.querySelector(`input[value="${type}"]`).checked = true;
+
+            // Show/hide craft type field based on user type
+            if (type === 'artisan') {
+                craftGroup.style.display = 'block';
+                document.getElementById('craftType').required = true;
+            } else {
+                craftGroup.style.display = 'none';
+                document.getElementById('craftType').required = false;
+            }
+        }
+
+        // document.getElementById('signupForm').addEventListener('submit', function (e) {
+        //     e.preventDefault();
+
+        //     const formData = new FormData(this);
+        //     const userData = Object.fromEntries(formData.entries());
+
+        //     // Simulate signup process
+        //     const button = document.querySelector('.signup-btn');
+        //     button.innerHTML = 'Creating Account...';
+        //     button.disabled = true;
+
+        //     setTimeout(() => {
+
+        //         button.innerHTML = 'Create Account';
+        //         button.disabled = false;
+        //         // In a real app, redirect to dashboard or verification page
+        //     }, 2000);
+        // });
+
+        // Add floating animation to input fields
+        document.querySelectorAll('input, select').forEach(input => {
+            input.addEventListener('focus', function () {
+                this.style.transform = 'translateY(-1px)';
+            });
+
+            input.addEventListener('blur', function () {
+                this.style.transform = 'translateY(0)';
+            });
+        });
+    </script>
+</body>
+
+</html>

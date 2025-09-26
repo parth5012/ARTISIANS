@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Artisan Dashboard - ArtifyLabs</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Georgia', serif;
+            background: linear-gradient(135deg, #F5E6D3 0%, #E8D5C0 100%);
+            min-height: 100vh;
+            color: #2C1810;
+        }
+
+        .navbar {
+            background: linear-gradient(135deg, #8B5A3C 0%, #A0522D 50%, #CD853F 100%);
+            padding: 1rem 0;
+            box-shadow: 0 2px 20px rgba(139, 90, 60, 0.3);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 2rem;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #F5E6D3;
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .nav-item {
+            color: #F5E6D3;
+            text-decoration: none;
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-item:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-1px);
+        }
+
+        .nav-profile {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #F5E6D3;
+        }
+
+        .avatar {
+            width: 35px;
+            height: 35px;
+            background: linear-gradient(45deg, #D2691E, #CD853F);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .dashboard-header {
+            background: linear-gradient(135deg, rgba(139, 90, 60, 0.1) 0%, rgba(210, 105, 30, 0.1) 100%);
+            padding: 2rem;
+            border-radius: 20px;
+            margin-bottom: 2rem;
+            border: 1px solid rgba(139, 90, 60, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .dashboard-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 200px;
+            height: 200px;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="20" fill="rgba(139,90,60,0.1)"/><circle cx="30" cy="30" r="10" fill="rgba(210,105,30,0.1)"/><circle cx="70" cy="70" r="15" fill="rgba(205,133,63,0.1)"/></svg>') no-repeat;
+            opacity: 0.5;
+        }
+
+        .welcome-message {
+            position: relative;
+            z-index: 2;
+        }
+
+        .welcome-title {
+            font-size: 2.2rem;
+            color: #8B5A3C;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .welcome-subtitle {
+            color: #666;
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+        }
+
+        .ai-badge {
+            background: linear-gradient(45deg, #D2691E, #CD853F);
+            color: white;
+            padding: 0.5rem 1.2rem;
+            border-radius: 25px;
+            font-size: 0.9rem;
+            border: none;
+            cursor: pointer;
+            transition: transform 0.2s;
+            display: inline-block;
+        }
+
+        .ai-badge:hover {
+            transform: translateY(-1px);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 4px 20px rgba(139, 90, 60, 0.1);
+            border: 1px solid rgba(139, 90, 60, 0.1);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: linear-gradient(to bottom, #D2691E, #CD853F);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 30px rgba(139, 90, 60, 0.2);
+        }
+
+        .stat-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .stat-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(45deg, #D2691E, #CD853F);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2rem;
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #8B5A3C;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-trend {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.8rem;
+        }
+
+        .trend-up {
+            color: #4CAF50;
+        }
+
+        .trend-down {
+            color: #f44336;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .content-card {
+            background: white;
+            border-radius: 15px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 20px rgba(139, 90, 60, 0.1);
+            border: 1px solid rgba(139, 90, 60, 0.1);
+        }
+
+        .card-title {
+            font-size: 1.3rem;
+            color: #8B5A3C;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .action-btn {
+            background: linear-gradient(135deg, #D2691E, #CD853F);
+            color: white;
+            padding: 1.2rem;
+            border: none;
+            border-radius: 12px;
+            text-decoration: none;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(210, 105, 30, 0.4);
+            text-decoration: none;
+            color: white;
+        }
+
+        .product-list {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .product-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            border-bottom: 1px solid #F0F0F0;
+            transition: background 0.2s;
+        }
+
+        .product-item:hover {
+            background: #FAFAFA;
+        }
+
+        .product-image {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #E0E0E0, #F5F5F5);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #999;
+        }
+
+        .product-info {
+            flex: 1;
+        }
+
+        .product-name {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 0.3rem;
+        }
+
+        .product-stats {
+            font-size: 0.8rem;
+            color: #666;
+        }
+
+        .product-price {
+            font-weight: bold;
+            color: #D2691E;
+        }
+
+        .ai-insights {
+            background: linear-gradient(135deg, #E8F5E8 0%, #F0F8FF 100%);
+            border: 2px solid #D2691E;
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .insight-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            padding: 1rem;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .insight-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(45deg, #D2691E, #CD853F);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.1rem;
+            flex-shrink: 0;
+        }
+
+        .insight-content h4 {
+            color: #8B5A3C;
+            margin-bottom: 0.3rem;
+        }
+
+        .insight-content p {
+            color: #666;
+            font-size: 0.9rem;
+            margin: 0;
+        }
+
+        .activity-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.8rem 0;
+            border-bottom: 1px solid #F0F0F0;
+        }
+
+        .activity-icon {
+            width: 35px;
+            height: 35px;
+            background: #F5E6D3;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #8B5A3C;
+        }
+
+        .activity-content {
+            flex: 1;
+        }
+
+        .activity-title {
+            font-size: 0.9rem;
+            color: #333;
+            margin-bottom: 0.2rem;
+        }
+
+        .activity-time {
+            font-size: 0.8rem;
+            color: #999;
+        }
+
+        @media (max-width: 1200px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            .nav-container {
+                padding: 0 1rem;
+            }
+
+            .nav-menu {
+                gap: 1rem;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .quick-actions {
+                grid-template-columns: 1fr;
+            }
+
+            .welcome-title {
+                font-size: 1.8rem;
+            }
+        }
+
+        .chart-container {
+            height: 300px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #FAFAFA, #F5F5F5);
+            border-radius: 10px;
+            color: #999;
+            margin-top: 1rem;
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">ArtifyLabs</div>
+            <div class="nav-menu">
+                <a href="#" class="nav-item">Dashboard</a>
+                <a href="#" class="nav-item">Products</a>
+                <a href="#" class="nav-item">Orders</a>
+                <a href="#" class="nav-item">Analytics</a>
+                <a href="#" class="nav-item">Messages</a>
+            </div>
+            <div class="nav-profile">
+                <div class="avatar">JD</div>
+                <span>John Artisan</span>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="dashboard-header">
+            <div class="welcome-message">
+                <h1 class="welcome-title">
+                    🎨 Welcome back, John!
+                </h1>
+                <p class="welcome-subtitle">Your pottery workshop has 3 new orders and 12 product views today</p>
+                <button class="ai-badge">✨ AI Assistant Active</button>
+            </div>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div class="stat-icon">📦</div>
+                    <div class="stat-trend trend-up">↗ +15%</div>
+                </div>
+                <div class="stat-number">24</div>
+                <div class="stat-label">Products Listed</div>
+                <div class="stat-trend trend-up">+3 this month</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div class="stat-icon">💰</div>
+                    <div class="stat-trend trend-up">↗ +28%</div>
+                </div>
+                <div class="stat-number">$2,847</div>
+                <div class="stat-label">Total Sales</div>
+                <div class="stat-trend trend-up">+$412 this week</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div class="stat-icon">📋</div>
+                    <div class="stat-trend trend-up">↗ +5</div>
+                </div>
+                <div class="stat-number">18</div>
+                <div class="stat-label">Active Orders</div>
+                <div class="stat-trend">3 pending shipment</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div class="stat-icon">👁️</div>
+                    <div class="stat-trend trend-up">↗ +42%</div>
+                </div>
+                <div class="stat-number">1,205</div>
+                <div class="stat-label">Profile Views</div>
+                <div class="stat-trend trend-up">+127 this week</div>
+            </div>
+        </div>
+
+        <div class="ai-insights">
+            <h2 class="card-title">🤖 AI Insights & Recommendations</h2>
+            <div class="insight-item">
+                <div class="insight-icon">📈</div>
+                <div class="insight-content">
+                    <h4>Boost Your Visibility</h4>
+                    <p>Your ceramic bowls are trending! Consider adding 2-3 more bowl designs to capitalize on the 34%
+                        increase in search traffic.</p>
+                </div>
+            </div>
+            <div class="insight-item">
+                <div class="insight-icon">🎯</div>
+                <div class="insight-content">
+                    <h4>Optimize Pricing</h4>
+                    <p>Similar pottery items are selling 23% faster at $45-55 range. Consider adjusting your vase
+                        collection pricing.</p>
+                </div>
+            </div>
+            <div class="insight-item">
+                <div class="insight-icon">✨</div>
+                <div class="insight-content">
+                    <h4>Perfect Timing</h4>
+                    <p>Holiday season is approaching! Start promoting gift sets now - pottery items see 67% more sales
+                        in November.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="quick-actions">
+            <button class="action-btn"><a href="/upload_product">📸 Add New Product</a></button>
+            <button class="action-btn">📊 View Full Analytics</button>
+            <button class="action-btn">✏️ Edit Shop Profile</button>
+            <button class="action-btn">🚚 Manage Shipping</button>
+            <button class="action-btn">💬 Customer Messages</button>
+            <button class="action-btn">🤖 AI Product Optimizer</button>
+        </div>
+
+        <div class="main-content">
+            <div class="content-card">
+                <h2 class="card-title">
+                    Recent Products
+                    <a href="#" style="font-size: 0.9rem; color: #D2691E; text-decoration: none;">View All →</a>
+                </h2>
+                <div class="product-list">
+                    <div class="product-item">
+                        <div class="product-image">🏺</div>
+                        <div class="product-info">
+                            <div class="product-name">Handcrafted Ceramic Vase</div>
+                            <div class="product-stats">12 views • 2 favorites</div>
+                        </div>
+                        <div class="product-price">$89</div>
+                    </div>
+                    <div class="product-item">
+                        <div class="product-image">🍵</div>
+                        <div class="product-info">
+                            <div class="product-name">Artisan Coffee Mug Set</div>
+                            <div class="product-stats">28 views • 5 favorites</div>
+                        </div>
+                        <div class="product-price">$65</div>
+                    </div>
+                    <div class="product-item">
+                        <div class="product-image">🥣</div>
+                        <div class="product-info">
+                            <div class="product-name">Rustic Serving Bowl</div>
+                            <div class="product-stats">34 views • 8 favorites</div>
+                        </div>
+                        <div class="product-price">$45</div>
+                    </div>
+                    <div class="product-item">
+                        <div class="product-image">🕯️</div>
+                        <div class="product-info">
+                            <div class="product-name">Ceramic Candle Holders</div>
+                            <div class="product-stats">19 views • 3 favorites</div>
+                        </div>
+                        <div class="product-price">$35</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-card">
+                <h2 class="card-title">Recent Activity</h2>
+                <div class="activity-item">
+                    <div class="activity-icon">💰</div>
+                    <div class="activity-content">
+                        <div class="activity-title">New order received</div>
+                        <div class="activity-time">2 hours ago</div>
+                    </div>
+                </div>
+                <div class="activity-item">
+                    <div class="activity-icon">❤️</div>
+                    <div class="activity-content">
+                        <div class="activity-title">Product favorited</div>
+                        <div class="activity-time">4 hours ago</div>
+                    </div>
+                </div>
+                <div class="activity-item">
+                    <div class="activity-icon">💬</div>
+                    <div class="activity-content">
+                        <div class="activity-title">New message received</div>
+                        <div class="activity-time">6 hours ago</div>
+                    </div>
+                </div>
+                <div class="activity-item">
+                    <div class="activity-icon">📦</div>
+                    <div class="activity-content">
+                        <div class="activity-title">Product shipped</div>
+                        <div class="activity-time">1 day ago</div>
+                    </div>
+                </div>
+                <div class="activity-item">
+                    <div class="activity-icon">⭐</div>
+                    <div class="activity-content">
+                        <div class="activity-title">5-star review received</div>
+                        <div class="activity-time">2 days ago</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="content-card">
+            <h2 class="card-title">Sales Performance</h2>
+            <div class="chart-container">
+                📊 Sales chart will be displayed here
+                <br><small>Integration with charting library needed</small>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Add interactivity
+        document.querySelectorAll('.action-btn').forEach(btn => {
+            btn.addEventListener('click', function () {
+                this.style.transform = 'scale(0.98)';
+                setTimeout(() => {
+                    this.style.transform = '';
+                }, 150);
+            });
+        });
+
+        // Simulate real-time updates
+        function updateStats() {
+            const viewsElement = document.querySelector('.stat-card:last-child .stat-number');
+            let views = parseInt(viewsElement.textContent.replace(',', ''));
+            views += Math.floor(Math.random() * 3);
+            viewsElement.textContent = views.toLocaleString();
+        }
+
+        setInterval(updateStats, 10000); // Update every 10 seconds
+    </script>
+</body>
+
+</html>

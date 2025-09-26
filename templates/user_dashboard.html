@@ -1,0 +1,967 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Buyer Dashboard - ArtifyLabs</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Georgia', serif;
+            background: linear-gradient(135deg, #F5E6D3 0%, #E8D5C0 100%);
+            min-height: 100vh;
+            color: #2C1810;
+        }
+
+        .navbar {
+            background: linear-gradient(135deg, #8B5A3C 0%, #A0522D 50%, #CD853F 100%);
+            padding: 1rem 0;
+            box-shadow: 0 2px 20px rgba(139, 90, 60, 0.3);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 2rem;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #F5E6D3;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .logo:hover {
+            transform: scale(1.05);
+        }
+
+        .search-container {
+            flex: 1;
+            max-width: 400px;
+            margin: 0 2rem;
+            position: relative;
+        }
+
+        .search-bar {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 25px;
+            padding: 0.7rem 1.2rem;
+            color: white;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+        }
+
+        .search-bar::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .search-bar:focus {
+            outline: none;
+            background: rgba(255, 255, 255, 0.3);
+            border-color: rgba(255, 255, 255, 0.5);
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .nav-item {
+            color: #F5E6D3;
+            text-decoration: none;
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .nav-item:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-1px);
+        }
+
+        .nav-item.active::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 20px;
+            height: 2px;
+            background: #F5E6D3;
+            border-radius: 2px;
+        }
+
+        .nav-profile {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            color: #F5E6D3;
+        }
+
+        .notification-icon,
+        .cart-icon {
+            position: relative;
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+            font-size: 1.2rem;
+        }
+
+        .notification-icon:hover,
+        .cart-icon:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: scale(1.1);
+        }
+
+        .cart-badge,
+        .notification-badge {
+            position: absolute;
+            top: -2px;
+            right: -2px;
+            background: #D2691E;
+            color: white;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            font-weight: bold;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(210, 105, 30, 0.7);
+            }
+
+            70% {
+                box-shadow: 0 0 0 10px rgba(210, 105, 30, 0);
+            }
+
+            100% {
+                box-shadow: 0 0 0 0 rgba(210, 105, 30, 0);
+            }
+        }
+
+        .profile-section {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            cursor: pointer;
+            padding: 0.3rem;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+        }
+
+        .profile-section:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .avatar {
+            width: 35px;
+            height: 35px;
+            background: linear-gradient(45deg, #D2691E, #CD853F);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .dashboard-header {
+            background: linear-gradient(135deg, rgba(139, 90, 60, 0.1) 0%, rgba(210, 105, 30, 0.1) 100%);
+            padding: 2.5rem;
+            border-radius: 20px;
+            margin-bottom: 2rem;
+            border: 1px solid rgba(139, 90, 60, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .dashboard-header::before {
+            content: '';
+            position: absolute;
+            top: -50px;
+            right: -50px;
+            width: 200px;
+            height: 200px;
+            background: radial-gradient(circle, rgba(139, 90, 60, 0.1) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+
+        .welcome-message {
+            position: relative;
+            z-index: 2;
+        }
+
+        .welcome-title {
+            font-size: 2.5rem;
+            color: #8B5A3C;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .welcome-subtitle {
+            color: #666;
+            font-size: 1.1rem;
+            margin-bottom: 1.5rem;
+            line-height: 1.5;
+        }
+
+        .personalized-badge {
+            background: linear-gradient(45deg, #D2691E, #CD853F);
+            color: white;
+            padding: 0.6rem 1.5rem;
+            border-radius: 25px;
+            font-size: 0.9rem;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-block;
+            box-shadow: 0 4px 15px rgba(210, 105, 30, 0.3);
+        }
+
+        .personalized-badge:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(210, 105, 30, 0.4);
+        }
+
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .mini-stat {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(139, 90, 60, 0.1);
+            border: 1px solid rgba(139, 90, 60, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .mini-stat:hover {
+            transform: translateY(-3px);
+        }
+
+        .mini-stat-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .mini-stat-number {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #8B5A3C;
+            margin-bottom: 0.3rem;
+        }
+
+        .mini-stat-label {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .action-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 4px 20px rgba(139, 90, 60, 0.1);
+            border: 1px solid rgba(139, 90, 60, 0.1);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .action-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(to right, #D2691E, #CD853F);
+        }
+
+        .action-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 30px rgba(139, 90, 60, 0.2);
+        }
+
+        .action-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        .action-title {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #8B5A3C;
+            margin-bottom: 0.8rem;
+        }
+
+        .action-desc {
+            color: #666;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        .action-meta {
+            color: #D2691E;
+            font-size: 0.85rem;
+            font-weight: 500;
+            margin-top: 0.5rem;
+        }
+
+        .featured-section {
+            background: linear-gradient(135deg, #FFF5EE 0%, #F0F8FF 100%);
+            border: 2px solid #D2691E;
+            border-radius: 20px;
+            padding: 2.5rem;
+            margin-bottom: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .featured-section::before {
+            content: '✨';
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            font-size: 2rem;
+            opacity: 0.3;
+            animation: sparkle 3s ease-in-out infinite;
+        }
+
+        @keyframes sparkle {
+
+            0%,
+            100% {
+                transform: scale(1) rotate(0deg);
+                opacity: 0.3;
+            }
+
+            50% {
+                transform: scale(1.2) rotate(180deg);
+                opacity: 0.6;
+            }
+        }
+
+        .featured-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .featured-title {
+            font-size: 1.8rem;
+            color: #8B5A3C;
+            margin-bottom: 0.5rem;
+        }
+
+        .featured-subtitle {
+            color: #666;
+            font-size: 1rem;
+        }
+
+        .featured-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .featured-item {
+            background: white;
+            border-radius: 15px;
+            padding: 1.8rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            border: 1px solid rgba(139, 90, 60, 0.1);
+        }
+
+        .featured-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(139, 90, 60, 0.15);
+        }
+
+        .featured-icon {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .featured-item-title {
+            font-weight: bold;
+            color: #8B5A3C;
+            margin-bottom: 0.8rem;
+            font-size: 1.1rem;
+        }
+
+        .featured-desc {
+            color: #666;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            margin-bottom: 1rem;
+        }
+
+        .featured-cta {
+            background: linear-gradient(45deg, #D2691E, #CD853F);
+            color: white;
+            border: none;
+            padding: 0.6rem 1.2rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .featured-cta:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 15px rgba(210, 105, 30, 0.4);
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .content-card {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 4px 20px rgba(139, 90, 60, 0.1);
+            border: 1px solid rgba(139, 90, 60, 0.1);
+            height: fit-content;
+        }
+
+        .card-title {
+            font-size: 1.4rem;
+            color: #8B5A3C;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .card-action {
+            font-size: 0.9rem;
+            color: #D2691E;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .card-action:hover {
+            color: #8B5A3C;
+            text-decoration: underline;
+        }
+
+        .recommendations-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 1.2rem;
+        }
+
+        .recommendation-item {
+            background: #FAFAFA;
+            border-radius: 12px;
+            padding: 1rem;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: 2px solid transparent;
+        }
+
+        .recommendation-item:hover {
+            border-color: #D2691E;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(210, 105, 30, 0.2);
+        }
+
+        .rec-image {
+            width: 100%;
+            height: 120px;
+            background: linear-gradient(135deg, #E8E8E8, #F5F5F5);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.2rem;
+            margin-bottom: 1rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .rec-image::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.5s;
+        }
+
+        .recommendation-item:hover .rec-image::before {
+            left: 100%;
+        }
+
+        .rec-title {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 0.4rem;
+            font-size: 0.9rem;
+            line-height: 1.3;
+        }
+
+        .rec-artisan {
+            color: #666;
+            font-size: 0.8rem;
+            margin-bottom: 0.6rem;
+        }
+
+        .rec-price {
+            font-weight: bold;
+            color: #D2691E;
+            font-size: 1rem;
+            margin-bottom: 0.3rem;
+        }
+
+        .rec-rating {
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+            font-size: 0.8rem;
+            color: #FFB400;
+        }
+
+        .wishlist-item,
+        .order-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            border-bottom: 1px solid #F0F0F0;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .wishlist-item:hover,
+        .order-item:hover {
+            background: #FAFAFA;
+            transform: translateX(5px);
+        }
+
+        .wishlist-image,
+        .order-image {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #E8E8E8, #F5F5F5);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #999;
+            font-size: 1.8rem;
+            flex-shrink: 0;
+        }
+
+        .wishlist-info,
+        .order-info {
+            flex: 1;
+        }
+
+        .wishlist-name,
+        .order-title {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 0.3rem;
+        }
+
+        .wishlist-artisan,
+        .order-date {
+            font-size: 0.8rem;
+            color: #666;
+        }
+
+        .wishlist-price {
+            font-weight: bold;
+            color: #D2691E;
+            font-size: 1.1rem;
+        }
+
+        .order-status {
+            padding: 0.4rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            text-align: center;
+            min-width: 80px;
+        }
+
+        .status-shipped {
+            background: #E8F5E8;
+            color: #2E7D32;
+        }
+
+        .status-processing {
+            background: #FFF3E0;
+            color: #F57C00;
+        }
+
+        .status-delivered {
+            background: #E3F2FD;
+            color: #1976D2;
+        }
+
+        .artisan-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .artisan-card {
+            background: white;
+            border-radius: 15px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 20px rgba(139, 90, 60, 0.1);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: 1px solid rgba(139, 90, 60, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .artisan-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(to right, #D2691E, #CD853F);
+        }
+
+        .artisan-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 30px rgba(139, 90, 60, 0.2);
+        }
+
+        .artisan-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .artisan-avatar {
+            width: 55px;
+            height: 55px;
+            background: linear-gradient(45deg, #D2691E, #CD853F);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 1.1rem;
+            box-shadow: 0 4px 15px rgba(210, 105, 30, 0.3);
+        }
+
+        .artisan-info {
+            flex: 1;
+        }
+
+        .artisan-name {
+            font-weight: bold;
+            color: #8B5A3C;
+            font-size: 1.1rem;
+            margin-bottom: 0.2rem;
+        }
+
+        .artisan-craft {
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .artisan-rating {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            color: #FFB400;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+
+        .artisan-stats {
+            display: flex;
+            justify-content: space-between;
+            padding-top: 1rem;
+            border-top: 1px solid #F0F0F0;
+            font-size: 0.85rem;
+            color: #666;
+        }
+
+        .artisan-stat {
+            text-align: center;
+        }
+
+        .artisan-stat-value {
+            font-weight: bold;
+            color: #8B5A3C;
+            display: block;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 2rem;
+            color: #666;
+        }
+
+        .empty-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        @media (max-width: 1200px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            .nav-container {
+                padding: 0 1rem;
+                flex-wrap: wrap;
+            }
+
+            .search-container {
+                order: 3;
+                width: 100%;
+                margin: 1rem 0 0 0;
+                max-width: none;
+            }
+
+            .nav-menu {
+                gap: 1rem;
+            }
+
+            .nav-item {
+                padding: 0.3rem 0.8rem;
+                font-size: 0.9rem;
+            }
+
+            .quick-actions,
+            .stats-row {
+                grid-template-columns: 1fr;
+            }
+
+            .welcome-title {
+                font-size: 2rem;
+            }
+
+            .recommendations-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .artisan-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .recommendations-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .featured-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">ArtifyLabs</div>
+            <div class="search-container">
+                <input type="text" class="search-bar" placeholder="Search handmade treasures...">
+            </div>
+            <div class="nav-menu">
+                <a href="#" class="nav-item active">Discover</a>
+                <a href="#" class="nav-item">Categories</a>
+                <a href="#" class="nav-item">Artisans</a>
+                <a href="#" class="nav-item">Gifts</a>
+            </div>
+            <div class="nav-profile">
+                <div class="notification-icon">
+                    🔔
+                    <div class="notification-badge">3</div>
+                </div>
+                <div class="cart-icon">
+                    🛒
+                    <div class="cart-badge">2</div>
+                </div>
+                <div class="profile-section">
+                    <div class="avatar">SM</div>
+                    <span>{{user['first_name']}}</span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="dashboard-header">
+            <div class="welcome-message">
+                <h1 class="welcome-title">
+                    🛍️ Hello {{ user['first_name']}}!
+                </h1>
+                <p class="welcome-subtitle">Discover new artisans, track your orders, and find unique handmade treasures
+                    curated just for you. We've found 12 new items that match your style!</p>
+                <button class="personalized-badge">✨ AI Personalized For You</button>
+            </div>
+        </div>
+
+        <div class="stats-row">
+            <div class="mini-stat">
+                <div class="mini-stat-icon">❤️</div>
+                <div class="mini-stat-number">7</div>
+                <div class="mini-stat-label">Wishlist Items</div>
+            </div>
+            <div class="mini-stat">
+                <div class="mini-stat-icon">📦</div>
+                <div class="mini-stat-number">12</div>
+                <div class="mini-stat-label">Total Orders</div>
+            </div>
+            <div class="mini-stat">
+                <div class="mini-stat-icon">⭐</div>
+                <div class="mini-stat-number">4.9</div>
+                <div class="mini-stat-label">Avg Rating Given</div>
+            </div>
+            <div class="mini-stat">
+                <div class="mini-stat-icon">🎨</div>
+                <div class="mini-stat-number">5</div>
+                <div class="mini-stat-label">Following Artists</div>
+            </div>
+        </div>
+
+        <div class="quick-actions">
+            <div class="action-card">
+                <div class="action-icon">🔍</div>
+                <div class="action-title">Browse Products</div>
+                <div class="action-desc">Discover 12,000+ unique handmade items from artisans worldwide</div>
+                <div class="action-meta">New arrivals daily</div>
+            </div>
+            <div class="action-card">
+                <div class="action-icon">❤️</div>
+                <div class="action-title">My Wishlist</div>
+                <div class="action-desc">7 saved items waiting for you, including 2 with recent price drops</div>
+                <div class="action-meta">2 price alerts</div>
+            </div>
+            <div class="action-card">
+                <div class="action-icon">📦</div>
+                <div class="action-title">Order Tracking</div>
+                <div class="action-desc">Track your 12 purchases and leave reviews for artisans</div>
+                <div class="action-meta">1 shipped today</div>
+            </div>
+            <div class="action-card">
+                <div class="action-icon">👥</div>
+                <div class="action-title">Following</div>
+                <div class="action-desc">Stay updated with 5 favorite artisans and their latest creations</div>
+                <div class="action-meta">3 new posts</div>
+            </div>
+        </div>
+
+        <div class="featured-section">
+            <div class="featured-header">
+                <h2 class="featured-title">🎨 Curated Collections</h2>
+                <p class="featured-subtitle">Handpicked themes and collections based on current trends and your
+                    preferences</p>
+            </div>
+            <div class="featured-grid">
+                <div class="featured-item">
+                    <div class="featured-icon">🍂</div>
+                    <div class="featured-item-title">Autumn Essentials</div>
+                    <div class="featured-desc">Cozy ceramics, warm textiles, and seasonal décor perfect for fall
+                        ambiance</div>
+                    <button class="featured-cta">Explore Collection</button>
+                </div>
+                <div class="featured-item">
+                    <div class="featured-icon">🎁</div>
+                    <div class="featured-item-title">Holiday Gifts</div>
+                    <div class="featured-desc">Unique, personal gifts that show you care - thoughtfully curated under
+                        $100</div>
+                    <button class="featured-cta">Shop Gifts</button>
+                </div>
+                <div class="featured-item">
+                    <div class="featured-icon">🏠</div>
+                    <div class="featured-item-title">Home & Living</div>
+                    <div class="featured-desc">Transform your space with handcrafted furniture, décor, and functional
+                        art</div>
+                    <button class="featured-cta">Browse Home</button>
+                </div>
+                <div class="featured-item">
+                    <div class="featured-icon">💍</div>
+                    <div class="featured-item-title">Artisan Jewelry</div>
+                    <div class="featured-desc">Unique pieces you won't find anywhere else, made with love and precision
+                    </div>
+                    <button class="featured-cta">View Jewelry</button>
+                </div>
+            </div>
+        </div>
+
+</body>
+
+</html>
