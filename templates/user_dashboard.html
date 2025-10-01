@@ -856,7 +856,7 @@
                 </div>
                 <div class="profile-section">
                     <div class="avatar">SM</div>
-                    <span>{{user['first_name']}}</span>
+                    <span>{{ user['first_name'] }}</span>
                 </div>
             </div>
         </div>
@@ -898,12 +898,14 @@
         </div>
 
         <div class="quick-actions">
-            <div class="action-card">
-                <div class="action-icon">🔍</div>
-                <div class="action-title">Browse Products</div>
-                <div class="action-desc">Discover 12,000+ unique handmade items from artisans worldwide</div>
-                <div class="action-meta">New arrivals daily</div>
-            </div>
+            <button onclick="location.href='/products'">
+                <div class="action-card">
+                    <div class="action-icon">🔍</div>
+                    <div class="action-title">Browse Products</div>
+                    <div class="action-desc">Discover 12,000+ unique handmade items from artisans worldwide</div>
+                    <div class="action-meta">New arrivals daily</div>
+                </div>
+            </button>
             <div class="action-card">
                 <div class="action-icon">❤️</div>
                 <div class="action-title">My Wishlist</div>
@@ -961,7 +963,11 @@
                 </div>
             </div>
         </div>
-
+        <!-- <script>
+            document.getElementById("ProductList").onclick = function () {
+                window.location.href = "/products";
+            }; -->
+        <!-- </script> -->
 </body>
 
 </html>
