@@ -71,7 +71,7 @@ def signup():
                 return jsonify({'error': 'Please select your craft specialty'}), 400
 
             # Check if user already exists in either collection
-            existing_user, _ = UserService.find_user_by_email(email)
+            existing_user, _ = UserService.find_user_by_email(email,artisans,users)
             if existing_user:
                 return jsonify({'error': 'Email already registered'}), 400
             profile_pic = request.files.get('profile_pic')
