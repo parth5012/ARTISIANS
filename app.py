@@ -10,6 +10,7 @@ from flask import (
     jsonify,
 )
 from werkzeug.utils import secure_filename
+from werkzeug.security import check_password_hash
 from flask_pymongo import PyMongo
 from utils.services import UserService
 from utils.utilfuncs import allowed_file, generate_story
@@ -244,7 +245,7 @@ def login():
         email = request.form["email"]
         password = request.form["password"]
         for user in users:
-            if user["email"] == email and user["password"] == password:
+            if user["email"] == email and check_password_hash(user["password"], password):
                 session["user"] = email
                 return redirect(url_for("product_list"))
         flash("Invalid credentials")
